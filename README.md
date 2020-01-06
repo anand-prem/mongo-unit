@@ -1,7 +1,7 @@
 # mongo-unit
 
 This library is done to simplify creation of integration tests for node.js application with Mongo DB.
-I starts local mongodb process using [mongodb-prebuilt](https://github.com/winfinit/mongodb-prebuilt) library, 
+I starts local mongodb process using [mongodb-prebuilt](https://github.com/winfinit/mongodb-prebuilt) library,
 and it work in "InMemory" mode, which improve performance of your tests.
 
 ### How to use it
@@ -26,8 +26,8 @@ add init.spec.js
 const mongoUnit = require('mongo-unit')
 
 mongoUnit.start().then(url => {
-  console.log('fake mongo is started: ', url)
-  process.env.DATABASE_URL = url // this var process.env.DATABASE_URL = will keep link to fake mongo
+  console.log('fake mongo is started: ', mongoUnit.getUrl)
+  process.env.DATABASE_URL = mongoUnit.getUrl // this var process.env.DATABASE_URL = will keep link to fake mongo
   run() // this line start mocha tests
 })
 
@@ -92,11 +92,11 @@ const mongoUnit = require('mongo-unit')
 const testData = require('./data.json')
 const daoUT = require('./dao')
 describe('dao', ()=>{
-  
+
     before(() => daoUT.init())
     beforeEach(() => mongoUnit.load(testData))
     afterEach(() => mongoUnit.drop())
-  
+
     it('should find all users', () => {
       return daoUT.User.find()
         .then(users => {
@@ -104,7 +104,7 @@ describe('dao', ()=>{
           expect(users[0].name).to.equal('test')
         })
     })
-  
+
     it('should find all tasks for user 1', () => {
       return daoUT.User.find()
         .then(users => users[0])
@@ -123,7 +123,7 @@ describe('dao', ()=>{
 I was inspired by [dbUnit](http://dbunit.sourceforge.net) library, which is very popular in java world.
 
 > There is alternative library for mocking Mongo: [mockgoose](https://github.com/mockgoose/mockgoose)
-  
+
 ## Requirements
 It works on Node.js 8+
 
@@ -134,7 +134,7 @@ It works on Node.js 8+
 
 ### `start(opts)`
 It starts mongod on one of available port and returns Promise with URL to connect to this db
-`opts` is optional params, you can specify some command line params for mongod 
+`opts` is optional params, you can specify some command line params for mongod
 (more about it in documentation for [mongodb-prebuilt](https://github.com/winfinit/mongodb-prebuilt))
  `opts.port` - preferable mongo db port, default: `27017`
  `opts.dbName` - name of test db, default: `test`
@@ -174,5 +174,3 @@ helper function, load db data into mongo (url)
 
 ### `dropDb(url)`
 helper function, clear all db data from mongo (url)
-
-
